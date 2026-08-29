@@ -1,7 +1,8 @@
-import { Home, LogIn } from 'lucide-react'
+import { Home } from 'lucide-react'
 import { Toaster } from 'react-hot-toast'
 import { Route, Routes } from 'react-router-dom'
 import AppLayout from './pages/AppLayout'
+import Login from './pages/login'
 import Productpage from './pages/Productpage'
 import SearchResults from './pages/SearchResults'
 import FlashDeals from './pages/FlashDeals'
@@ -10,6 +11,7 @@ import MyOrders from './pages/MyOrders'
 import OrderTracking from './pages/OrderTracking'
 import Address from './pages/Addresses'
 import ProtectedRoute from './components/ProtectedRoute'
+
 const App = () => {
   return (
     <>
@@ -27,7 +29,7 @@ const App = () => {
       />
       <Routes>
         {/* Auth Pages - No Navbar/Footer */}
-        <Route path="/login" element={<LogIn />} />
+        <Route path="/login" element={<Login />} />
 
         {/* Main Pages - with Navbar/Footer */}
         <Route path='/' element={<AppLayout />}>
@@ -36,15 +38,14 @@ const App = () => {
           <Route path="products/:id" element={<Productpage />} />
           <Route path="search" element={<SearchResults />} />
           <Route path="deals" element={<FlashDeals />} />
-          <Route element = {<ProtectedRoute />}>
-          <Route path="checkout" element={<CheckOut />} />
-          <Route path="orders" element={<MyOrders />} />
-          <Route path="orders/:id" element={<OrderTracking />} />
-          <Route path="addresses" element={<Address />} />
-        </Route>
+          <Route element={<ProtectedRoute />}>
+            <Route path="checkout" element={<CheckOut />} />
+            <Route path="orders" element={<MyOrders />} />
+            <Route path="orders/:id" element={<OrderTracking />} />
+            <Route path="addresses" element={<Address />} />
+          </Route>
         </Route>
       </Routes>
-
     </>
   )
 }
