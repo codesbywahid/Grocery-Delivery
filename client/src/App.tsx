@@ -1,4 +1,4 @@
-import { Home } from 'lucide-react'
+import Home from './pages/Home'
 import { Toaster } from 'react-hot-toast'
 import { Route, Routes } from 'react-router-dom'
 import AppLayout from './pages/AppLayout'

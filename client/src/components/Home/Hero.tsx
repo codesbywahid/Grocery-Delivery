@@ -1,4 +1,5 @@
-import { ArrowRightIcon, LeafIcon, Link } from "lucide-react"
+import { ArrowRightIcon, LeafIcon } from "lucide-react"
+import { Link } from "react-router-dom"
 import { heroSectionData } from "../../assets/assets"
 
 const Hero = () => {
