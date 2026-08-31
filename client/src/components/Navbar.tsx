@@ -20,6 +20,10 @@ const Navbar = () => {
         }
 
     }
+    const handleLogout = () => {
+        setUserMenuOpen(false)
+        navigate('/');
+        }
 
   return (
     <nav className="bg-white sticky top-0 z-50 border-b border-app-border">
@@ -93,7 +97,7 @@ const Navbar = () => {
                                     )}
                                     {user && (
                                         <div className="border-t border-app-border pt-1">
-                                            <button className="flex items-center gap-3 px-4 py-2.5 text-sm text-app-error hover:bg-red-50 w-full transition-colors">
+                                            <button  onClick={handleLogout} className="flex items-center gap-3 px-4 py-2.5 text-sm text-app-error hover:bg-red-50 w-full transition-colors">
                                                 <LogOutIcon size={16}/>Logout
                                             </button>
 
