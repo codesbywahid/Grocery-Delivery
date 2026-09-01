@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import type { Product } from "../../types"
 import { dummyProducts } from "../../assets/assets"
+import { ArrowRightIcon, Link } from "lucide-react"
 
 const PopularProducts = () => {
     const [products, setProducts] = useState<Product[]>([])
@@ -13,6 +14,12 @@ const PopularProducts = () => {
                 <h2 className="text-2xl font-semibold">Popular Products</h2>
                 <p className="text-sm text-app-text-light mt-1">Top-rated products this season</p>
             </div>
+            <Link to='/products' className=" text-sm font-semibold text-app-orange hover:text-app-orange-dark flex items-center gap-1 transition colors"> View all <ArrowRightIcon />
+            </Link>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 xl:gap-8">
+            <p>Products List</p>
+
         </div>
     </section>
   )
