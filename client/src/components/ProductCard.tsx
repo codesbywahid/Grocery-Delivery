@@ -15,10 +15,11 @@ const ProductCard = ({product}:Props) => {
             <img src={product.image} alt={product.image} className="w-full h-full object-cover p-4 group-hover:p-2 transition-all duration-300" />
 
             {/* {Badge} */}
-            <div>
+            <div className="absolute top-2 left-2">
                 {product.discount > 0 && 
-             <span className="px-2 py-0.5 text-[10px] font-semibold uppercase bg-app-orange text-white rounded-full">   {product.discount}% OFF
-             </span>}
+                 <span className="px-2 py-0.5 text-[10px] font-semibold uppercase bg-app-orange text-white rounded-full">
+                    {product.discount}% OFF
+                 </span>}
             </div>
         </div>
         {/* {Info} */}
