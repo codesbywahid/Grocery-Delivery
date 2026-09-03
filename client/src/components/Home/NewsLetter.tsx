@@ -10,7 +10,8 @@ const NewsLetter = () => {
             </div>
             <h2>Subscribe to our NewsLetter</h2>
             <p className="text-app-text-light mb-8 text-base">Get weekly updates on fresh products, seasonal offers, and exclusive discounts right to your inbox.</p>
-            <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+            <form onSubmit={(e)=>e.preventDefault}
+            className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
               <input type="email" placeholder="Enter your email address" required className="flex-1 px-5 py-3.5 rounded-xl border border-app-border focus:border-app-green focus:ring bg-white text-sm transition all"/>
               <button type="submit" className="px-8 py-3.5 bg-app-green text-white font-semibold rounded-xl hover:bg-app-green-light transition-colors shadow-sm whitespace-nowrap active:scale-[0.98]">Subscribe</button>
             </form>
