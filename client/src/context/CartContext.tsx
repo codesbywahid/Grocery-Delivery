@@ -27,7 +27,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
     });
 
-    const [isCartOpen, setIsCartOpen] = useState(false);
+    const [isCartOpen, setIsCartOpen] = useState(true);
 
     useEffect(() => {
 
