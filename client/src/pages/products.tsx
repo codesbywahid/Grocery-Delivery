@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react"
 import { useSearchParams } from "react-router-dom"
-import { Product } from "../types"
+import type { Product } from "../types"
 import { categoriesData, dummyProducts } from "../assets/assets"
+import { Home, Link, SlidersHorizontal } from "lucide-react"
 
 const Products = () => {
   const [searchParams,setSearchParms] = useSearchParams()
@@ -46,7 +47,39 @@ useEffect(()=>{
   return (
     <div className="min-h-screen bg-app-cream">
       <div className="max-w-7xl mx-autp px-4 sm:px-6 lg:px-8 py-6">
-        
+        {/* BreadCrumb */}
+        <nav className="flex items-center gap-2 text-sm text-app-text-light mb-6">
+          <Link to='/' className="hover:text-app-green transition-colors">
+          <Home className="size-4"/>
+          </Link>
+          <span>/</span>
+          <span className="text-app-green font-medium">{activeCategory ? activeCategory.name : "All Products"}</span>
+        </nav>
+        <div className="flex gap-8 xl:gap-10">
+          {/* SideBar - Desktop */}
+          <aside className="hidden lg:block w-64 shrink-0">
+            <div className="bg-white rounded-2xl p-4 sticky top-24">
+              <p>Filter</p>
+            </div>
+          </aside>
+          {/* Main Content */}\
+          <main className="flex-1">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h1 className="text-2xl font-semibold text-app-green">{activeCategory ? activeCategory.name :"All Products"}</h1>
+                <p className="text-sm text-app-text-light mt-0.5">{products.length} products found</p>
+              </div>
+              <div className="flex flex-col lg:items-center gap-3">
+                {/* Mobile Filter toggle */}
+                <button className="lg:hidden flex items-center gap-2 px-3 py-2 text-sm bg-white rounded-xl border border-app-border hover:bg-app-cream transition-colors">
+                  <SlidersHorizontal className="size-4"/>Filters
+                </button>
+
+              </div>
+            </div>
+          </main>
+        </div>
       </div>
 
     </div>
