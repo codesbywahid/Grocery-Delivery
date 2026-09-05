@@ -1,14 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { ArrowRight, ArrowRightIcon, MinusIcon, PlusIcon, ShoppingBag, ShoppingBagIcon, Trash2Icon, XIcon } from "lucide-react";
-import { spawn } from "child_process";
-
 const CartSideBar = () => {
     const currency = import.meta.env.VITE_CURRENCY_SYMBOL || "$";
     const {items,updateQuantity,removeFromCart,cartTotal,isCartOpen,setIsCartOpen} = useCart()
     const navigate = useNavigate()
-    if(!isCartOpen) return null
+    if(!isCartOpen) return null 
     const deliveryFee = cartTotal>20 ? 0: 1.99
+    const grandTotal=cartTotal+deliveryFee
   return (
     <>
     {/* Overlay */}
