@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom"
 import type { Product } from "../types"
 import { categoriesData, dummyProducts } from "../assets/assets"
 import { ChevronDown, Home, Link, SlidersHorizontal } from "lucide-react"
+import ProductCard from "../components/ProductCard"
 
 const Products = () => {
   const [searchParams,setSearchParms] = useSearchParams()
@@ -89,6 +90,23 @@ useEffect(()=>{
               </div>
             </div>
             {/* Product Grid */}
+            {loading ? (
+              <p>Loading...</p>
+            ) : products.length === 0 ? (
+              <div className="text-center py-16">
+                <p className="text-lg font-semibold text-app-green mb-2">No products found</p>
+                <p className="text-sm text-app-text-light mb-4">Try adjusting your filters or search terms</p>
+                <button onClick={clearFilters} className="px-5 py-2 text-sm font-medium bg-app-green text-white rounded-xl hover:bg-app-green-light transition colors">Clear Filters</button>
+
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 xl:gap-8">
+                {products.map((product)=>product.stock>0 && (
+                  <ProductCard key={product._id} product={product} /> 
+                ))}
+              </div>
+            )}
+            {/* Pagination */}
           </main>
         </div>
       </div>
