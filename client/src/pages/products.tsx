@@ -183,6 +183,9 @@ const Products = () => {
               <XIcon className="size-5"/>
             </button>
           </div>
+          <div className="p-4">
+            <FilterPanel categories={categoriesData} category={category} organic={organic} minPrice={minPrice} maxPrice={maxPrice} updateFilter={updateFilter} clearFilters={clearFilters} hasFilters={hasFilters} />
+          </div>
         </div>
           </>
       )}
