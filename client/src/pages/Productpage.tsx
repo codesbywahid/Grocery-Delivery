@@ -110,6 +110,28 @@ const Productpage = () => {
               </span>
             </div>
 
+            {/* Description */}
+            <p className="text-sm text-app-text-light leading-relaxed mb-6">{product.description}</p>
+
+            {/* Stock */}
+
+            <div className="mb-6">
+              {product.stock > 0 ? (
+                <span className="text-sm text-app-success font-medium"> In Stock({product.stock} available)</span>
+              ) : (
+                <span className="text-sm text-app-error font-medium">Out of Stock</span>
+              )}
+            </div>
+
+            <div className="flex items-center gap-3">
+              {/* Quantity */}
+              <div className="flex items-center border border-app-border rounded-xl overflow-hidden">
+
+              </div>
+              {/* Add to Cart */}
+              <button></button>
+            </div>
+
           </div>
 
         </div>
