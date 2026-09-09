@@ -78,14 +78,26 @@ const Productpage = () => {
               
             }
           </div>
-
-
-            
           </div>
-          {/* Badge */}
           
 
           {/* Right Side Details */}
+          <div className="p-6 md:p-10 flex flex-col justify-center">
+            <span className="text-xs font-medium text-app-text-light tracking-wider mb-2 capitalize">{categoryLabel}</span>
+
+            <h1 className="text-2xl md:text-3xl font-semibold text-app-green mb-3">{product.name}</h1>
+
+            {/* Rating */}
+            {product.rating > 0 && (
+              <div className="flex items-center gap-2 mb-5">
+                <div>Stars</div>
+                <span>{product.rating}</span>
+                <span>({product.reviewCount} reviews) </span>
+
+              </div>
+            )}
+
+          </div>
 
         </div>
 
