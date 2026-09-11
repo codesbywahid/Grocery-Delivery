@@ -10,6 +10,12 @@ import Loading from "../components/Loading";
 
 import { ArrowLeftIcon } from "lucide-react";
 
+import OrderOTP from "../components/OrderTracking/OrderOTP";
+
+import LiveMap from "../components/OrderTracking/LiveMap";
+
+import OrderTimeLine from "../components/OrderTracking/OrderTimeLine";
+
 const OrderTracking = () => {
   const { id } = useParams();
 
@@ -19,7 +25,10 @@ const OrderTracking = () => {
 
   const [loading, setLoading] = useState(true);
 
-  const [livelocation, setLiveLocation] = useState<{lat: number;lng: number;} | null>(null);
+  const [livelocation, setLiveLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
 
   useEffect(() => {
     setOrder(dummyDashboardOrdersData.find((o) => o._id === id) as any);
@@ -70,6 +79,47 @@ const OrderTracking = () => {
           >
             {order.status}
           </span>
+        </div>
+
+        <div className="grid lg:grid-cols-3 gap-6">
+          {/* Left Side Timeline + Map area */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* OTP card */}
+            <OrderOTP order={order} />
+
+            {/* Live Tracking map */}
+            <LiveMap order={order} liveLocation={livelocation} />
+
+            {/* Progress Timeline */}
+            <OrderTimeLine order={order} />
+
+            {/* Delivery Person */}
+            {order?.deliveryPartner &&
+              order.status !== "Delivered" &&
+              order.status !== "Cancelled" && (
+                <div className="bg-white rounded-2xl p-5 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="size-11 rounded-full bg-app-green flex-center">
+                      <span className="text-white font-semibold text-sm">
+                        {order.deliveryPartner.name.charAt(0)}
+                      </span>
+                    </div>
+
+                    <div>
+                      <p className="text-sm font-semibold text-app-green">
+                        {order.deliveryPartner.name}
+                      </p>
+
+                      <p className="text-xs text-app-text-light capitalize">
+                        {order.deliveryPartner.vehicleType} Delivery Partner
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+          </div>
+
+          {/* Right Side - Order Details */}
         </div>
       </div>
     </div>
