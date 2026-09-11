@@ -8,7 +8,7 @@ import { dummyDashboardOrdersData } from "../assets/assets";
 
 import Loading from "../components/Loading";
 
-import { ArrowLeftIcon } from "lucide-react";
+import { ArrowLeftIcon, MapPinIcon, PhoneIcon } from "lucide-react";
 
 import OrderOTP from "../components/OrderTracking/OrderOTP";
 
@@ -111,15 +111,28 @@ const OrderTracking = () => {
                       </p>
 
                       <p className="text-xs text-app-text-light capitalize">
-                        {order.deliveryPartner.vehicleType} Delivery Partner
+                        {order.deliveryPartner.vehicleType} . Delivery Partner
                       </p>
                     </div>
+                  </div>
+                  <div>
+                    <a href={'tel:${order.deliveryPartner.phone}'} className="p-2.5 bg-app-cream rounded-xl hover:bg-app-cream-dark transition-colors">
+                      <PhoneIcon className="size-4 text-app-green"/>
+                    </a>
                   </div>
                 </div>
               )}
           </div>
 
           {/* Right Side - Order Details */}
+          <div className="space-y-5">
+            {/* Delivery Address */}
+            <div className="bg-white rounded-2xl p-5">
+              <h3>
+                <MapPinIcon className="size-4"/>Delivery Address
+              </h3>
+            </div>
+          </div>
         </div>
       </div>
     </div>
