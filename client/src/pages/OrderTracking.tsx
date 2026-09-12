@@ -1,63 +1,44 @@
 import { useEffect, useState } from "react";
-
 import { useNavigate, useParams } from "react-router-dom";
-
 import type { Order } from "../types";
-
 import { dummyDashboardOrdersData } from "../assets/assets";
-
 import Loading from "../components/Loading";
-
 import { ArrowLeftIcon, MapPinIcon, PhoneIcon } from "lucide-react";
-
 import OrderOTP from "../components/OrderTracking/OrderOTP";
-
 import LiveMap from "../components/OrderTracking/LiveMap";
-
 import OrderTimeLine from "../components/OrderTracking/OrderTimeLine";
-
 const OrderTracking = () => {
+
+  const currency = import.meta.env.VITE_CURRENCY_SYMBOL || "$";
   const { id } = useParams();
-
   const navigate = useNavigate();
-
   const [order, setOrder] = useState<Order | null>(null);
-
   const [loading, setLoading] = useState(true);
-
   const [livelocation, setLiveLocation] = useState<{
     lat: number;
     lng: number;
   } | null>(null);
-
   useEffect(() => {
     setOrder(dummyDashboardOrdersData.find((o) => o._id === id) as any);
     setLoading(false);
   }, [id, navigate]);
-
   if (loading) return <Loading />;
-
   if (!order) return null;
-
   return (
     <div className="min-h-screen mb-20 bg-app-cream">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <button
           onClick={() => navigate("/orders")}
-          className="flex items-center gap-2 text-sm text-app-text-light hover:text-app-green mb-6 transition-colors"
-        >
+          className="flex items-center gap-2 text-sm text-app-text-light hover:text-app-green mb-6 transition-colors">
           <ArrowLeftIcon className="size-4" />
-          Back to Orders
-        </button>
-
+          Back to Orders</button>
         {/* Order id, date & status */}
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1>
               Order #{order._id.slice(-8).toUpperCase()}
             </h1>
-
             <p className="text-sm text-app-text-light mt-1">
               Placed on{" "}
               {new Date(order.createdAt).toLocaleDateString("en-US", {
@@ -67,7 +48,6 @@ const OrderTracking = () => {
               })}
             </p>
           </div>
-
           <span
             className={`px-4 py-1.5 text-sm font-semibold rounded-full ${
               order.status === "Delivered"
@@ -75,24 +55,19 @@ const OrderTracking = () => {
                 : order.status === "Canceled"
                 ? "bg-red-100 text-red-700"
                 : "bg-app-orange/10 text-app-orange"
-            }`}
-          >
+            }`}>
             {order.status}
           </span>
         </div>
-
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Left Side Timeline + Map area */}
           <div className="lg:col-span-2 space-y-6">
             {/* OTP card */}
             <OrderOTP order={order} />
-
             {/* Live Tracking map */}
             <LiveMap order={order} liveLocation={livelocation} />
-
             {/* Progress Timeline */}
             <OrderTimeLine order={order} />
-
             {/* Delivery Person */}
             {order?.deliveryPartner &&
               order.status !== "Delivered" &&
@@ -104,12 +79,10 @@ const OrderTracking = () => {
                         {order.deliveryPartner.name.charAt(0)}
                       </span>
                     </div>
-
                     <div>
                       <p className="text-sm font-semibold text-app-green">
                         {order.deliveryPartner.name}
                       </p>
-
                       <p className="text-xs text-app-text-light capitalize">
                         {order.deliveryPartner.vehicleType} . Delivery Partner
                       </p>
@@ -123,7 +96,6 @@ const OrderTracking = () => {
                 </div>
               )}
           </div>
-
           {/* Right Side - Order Details */}
           <div className="space-y-5">
             {/* Delivery Address */}
@@ -139,11 +111,9 @@ const OrderTracking = () => {
               {order?.shippingAddress.city},{order?.shippingAddress.state}{order?.shippingAddress.zip}
             </p>
           </div>
-
           {/* Items */}
           <div className="bg-white rounded-2xl p-5">
             <h3 className="text-sm font-semibold text-app-green mb-3">Items ({order?.items.length})</h3>
-
             <div className="space-y-3">
               {order?.items.map((item,i)=>(
                 <div key={i} className="flex items-center gap-3">
@@ -152,8 +122,35 @@ const OrderTracking = () => {
                     <p className="text-sm font-medium text-app-green truncate">{item.name}</p>
                     <p className="text-xs text-app-text-light">x{item.quantity}</p>
                   </div>
+                  <span className="text-sm font-semibold">
+                    {currency}{(item.price*item.quantity).toFixed(2)}
+                  </span>
                 </div>
               ))}
+            </div>
+            <div className="mt-4 pt-3 border-t border-app-border space-y-1.5 text-sm">
+
+              <div className="flex justify-between">
+                <span className="text-app-text-light">Subtotal</span>
+                <span>{currency}{order?.subtotal.toFixed(2)}</span>
+
+              </div>
+
+              <div className="flex justify-between">
+                <span className="text-app-text-light">Delivery</span>
+                <span>{order?.deliveryFee === 0 ? "Free" : '${currency${order?.deliveryFee.toFixed(2}'} {currency}{order?.subtotal.toFixed(2)}</span>
+              </div>
+
+              <div className="flex justify-between">
+                <span className="text-app-text-light">Tax</span>
+                <span>{currency}{order?.tax.toFixed(2)}</span>
+              </div>
+
+              <div className="flex justify-between pt-2 border-t border-app-border font-semibold text-app-green">
+                <span>Total</span>
+                <span>{currency}{order?.total.toFixed(2)}</span>
+              </div>
+
 
             </div>
           </div>
@@ -162,5 +159,4 @@ const OrderTracking = () => {
     </div>
   );
 };
-
 export default OrderTracking;
