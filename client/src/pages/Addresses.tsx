@@ -8,6 +8,8 @@ import React, { useEffect, useState } from "react";
 
 import Loading from "../components/Loading";
 
+import AddressCard from "../components/AddressCard";
+
 const Address = () => {
   const [addresses, setAddresses] = useState<Address[]>([]);
 
@@ -60,7 +62,6 @@ const Address = () => {
 
   useEffect(() => {
     setAddresses(dummyAddressData);
-
     setTimeout(() => setLoading(false), 1000);
   }, []);
 
@@ -104,8 +105,13 @@ const Address = () => {
           </div>
         ) : (
           <div className="space-y-4">
-            {addresses.map((add) => (
-              <div key={add._id}>{add.address}</div>
+            {addresses.map((addr) => (
+              <AddressCard
+                key={addr._id}
+                addr={addr}
+                onEditHandler={onEditHandler}
+                setAddresses={setAddresses}
+              />
             ))}
           </div>
         )}
