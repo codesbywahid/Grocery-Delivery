@@ -9,6 +9,7 @@ import React, { useEffect, useState } from "react";
 import Loading from "../components/Loading";
 
 import AddressCard from "../components/AddressCard";
+import AddressForm from "../components/AddressForm";
 
 const Address = () => {
   const [addresses, setAddresses] = useState<Address[]>([]);
@@ -87,6 +88,7 @@ const Address = () => {
         </div>
 
         {/* Form Model */}
+        {showForm && <AddressForm resetForm={resetForm} handleSubmit={handleSubmit} form={form} setForm={setForm} editingId={editingId} />}
 
         {/* Address List */}
         {loading ? (
