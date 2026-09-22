@@ -77,7 +77,8 @@ const AddressForm = ({
             </div>
 
             <div className="flex items-end pb-1">
-              <label className="block text-sm font-medium text-app-green mb-1.5">
+              <label className="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" checked={form.isdefault} onChange={(e)=>setForm({...form, isDefault: e.target.checked})} />
               <span className="text-sm text-app-text">Set as default</span>
             </label>
             </div>
