@@ -2,7 +2,7 @@ import { MapPinIcon, PlusIcon } from "lucide-react";
 
 import { dummyAddressData } from "../assets/assets";
 
-import type { Address } from "../types";
+import type { Address as AddressType } from "../types";
 
 import React, { useEffect, useState } from "react";
 
@@ -12,7 +12,7 @@ import AddressCard from "../components/AddressCard";
 import AddressForm from "../components/AddressForm";
 
 const Address = () => {
-  const [addresses, setAddresses] = useState<Address[]>([]);
+  const [addresses, setAddresses] = useState<AddressType[]>([]);
 
   const [loading, setLoading] = useState(true);
 
@@ -47,7 +47,7 @@ const Address = () => {
     e.preventDefault();
   };
 
-  const onEditHandler = (add: Address) => {
+  const onEditHandler = (add: AddressType) => {
     setForm({
       label: add.label,
       address: add.address,
