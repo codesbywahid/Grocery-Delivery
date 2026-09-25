@@ -51,8 +51,7 @@ const Products = () => {
         <nav className="flex items-center gap-2 text-sm text-app-text-light mb-6">
           <Link
             to="/"
-            className="hover:text-app-green transition-colors"
-          >
+            className="hover:text-app-green transition-colors">
             <Home className="size-4" />
           </Link>
           <span>/</span>

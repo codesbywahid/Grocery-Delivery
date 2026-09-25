@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import type { Product } from "../types"
 import { useSearchParams } from "react-router-dom"
 import { dummyProducts } from "../assets/assets"
+import { Home, Link } from "lucide-react"
 const SearchResults = () => {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
@@ -20,6 +21,14 @@ const SearchResults = () => {
     <div className="min-h-screen bg-app-cream">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* BreadCrumbs */}
+        <nav className="flex items-center gap-2 text-sm text-app-text-light mb-6">
+        <Link to="/" className="hover:text-app-green transition-colors"><Home className="size-4" /></Link>
+        <span>/</span>
+        <span className="text-app-green font-medium">Search Results</span></nav>
+
+        {/* Header */}
+
+
 
       </div>
     </div>
