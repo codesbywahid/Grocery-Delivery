@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { useCart } from "../context/CartContext";
 import { dummyAddressData } from "../assets/assets";
 import type { Address } from "../types";
-import { ArrowLeft, CheckIcon, CreditCardIcon, MapPinIcon } from "lucide-react";
+import { ArrowLeft, CheckIcon, ChevronRightIcon, CreditCardIcon, MapPinIcon } from "lucide-react";
 const CheckOut = () => {
   const navigate = useNavigate()
   const currency = import.meta.env.VITE_CURRENCY_SYMBOL || '$';
@@ -81,8 +81,19 @@ const CheckOut = () => {
         <h1 className="text-2xl font-semibold text-app-green mb-8">Checkout</h1>
 
         {/* Steps */}
+        <div className="flex items-center gap-2 mb-8">
+          {steps.map((s,i)=>(
+            <div key={s.key} className="flex items-center gap-2">
+              <button onClick={()=>setStep(s.key)} className={'flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-colors ${step === s.key ? "bg-app-green text-white" : "bg-white text-app-text-light"}'}>
+                <s.icon className="size-4"/>{s.label}
+                {i<steps.length -1 && <ChevronRightIcon/>}
+              </button>
 
-        
+            </div>
+          ))}
+        </div>
+
+
       </div>
     </div>
   )
