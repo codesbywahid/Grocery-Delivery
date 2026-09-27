@@ -40,7 +40,7 @@ export const register = async (req: Request, res: Response) => {
     res.status(201).json({ user: userData, token })}
 
    
-    // Login
+// Login
 // POST /api/auth/Login
 export const Login = async (req: Request, res: Response) => {
     const { email, password } = req.body;
