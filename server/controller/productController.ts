@@ -43,7 +43,7 @@ export const  getProducts=async (req:Request,res:Response)=>{
 
 //GET/api/product/:id
 export const  getProduct=async (req:Request,res:Response)=>{
-    const product=await prisma.product.findUnique({where:{id:req.params.id as string}})
+    const product=await prisma.product.findUnique({where:{id:req.params.id as string }})
 
     if(!product){
         res.status(404).json({message:"Product not found"})
@@ -52,4 +52,10 @@ export const  getProduct=async (req:Request,res:Response)=>{
     const discount=product.originalPrice && product.price ? Math.round(((product.originalPrice - product.price)/product.originalPrice)*100):0;
 
     res.json({product:{...product,discount}})
+}
+
+//POST/api/products
+export const  createProduct=async (req:Request,res:Response)=>{
+    const product = await prisma.product.create({data:req.body})
+    res.status(201).json({product})
 }
