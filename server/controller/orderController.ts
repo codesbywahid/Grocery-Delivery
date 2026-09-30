@@ -45,4 +45,19 @@ export const createOrder = async (req: Request, res: Response) => {
     const deliveryFee = subtotal > 20 ? 0 : 1.99;
     const tax = Math.round(subtotal * 100) / 100;
     const total = Math.round((subtotal + deliveryFee + tax) * 100) / 100;
+
+    const order = await prisma.order.create({
+        data:{
+            userId:req.user!.id,
+            items:orderItems,
+            shippingAddress,
+            paymentMethod,
+            subtotal,
+            deliveryFee,
+            tax,
+            total,
+            statusHistory:[{ status : " Placed", note:"Order Placed successfully",timestamp:new Date()}]
+
+        }
+    })
 };
