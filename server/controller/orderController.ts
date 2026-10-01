@@ -60,4 +60,32 @@ export const createOrder = async (req: Request, res: Response) => {
 
         }
     })
-};
+    if(paymentMethod === "Card"){
+        //Stripe payment link
+
+    }
+    res.json({order})
+
+    //Decrease stock
+    for(const item of orderItems){
+        await prisma.product.update({
+            where:{id:item.product},
+            data:{stock:{decrement:item.quantity}}
+        })
+        
+    }
+}
+
+//Get User order
+//Get /api/orders
+export const getUserOrders = async (req: Request, res: Response) =>{
+    const {status} = req.query;
+    const where : any ={
+        userId:req.user!.id,
+        NOT:[{PaymentMethod:"card",isPaid:false}]
+    }
+    if(status && status!=="all"){
+        where.status=status;
+    }
+    
+}
