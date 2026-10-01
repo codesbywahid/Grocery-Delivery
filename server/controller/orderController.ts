@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../config/prisma.js";
+import { timeStamp } from "node:console";
 // Create Order
 
 // POST /api/orders
@@ -99,11 +100,31 @@ export const getUserOrders = async (req: Request, res: Response) =>{
 //GET /api/orders/:id
 export const getOrder = async (req: Request, res: Response) =>{
     const order = await prisma.order.findFirst({
-        where:{id:req.params.id as String,userId:req.user!.id},
+        where:{id:req.params.id as string,userId:req.user!.id},
         include:{deliveryPartner:{select:{name:true,phone:true,avatar:true,vehicleType:true}}}
     })
     if(!order){
         return res.status(404).json({message:"Order not found"})
     }
     res.json({order})
+}
+
+//Update order status (admin)
+//PUT /api/orders/:id/status
+export const updateOrderStatus = async (req: Request, res: Response) =>{
+    const {status,note}= req.body;
+    const order = await prisma.order.findUnique({where:{id:req.params.id as string}})
+
+    if(!order){
+        return res.status(404).json({message:"Order not found"})
+    }
+    const history = (Array.isArray(order.statusHistory)? order.statusHistory:[]) as any[];
+    history.push({status,note:note||'Order ${status.toLowerCase()}',timeStamp:new Date()})
+
+    const updateOrder = await prisma.order.update({
+        where: {id:req.params.id as string},
+        data:{status,statusHistory:history}
+    })
+
+    res.json({order:updateOrder})
 }
