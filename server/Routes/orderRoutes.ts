@@ -1,0 +1,16 @@
+import express from "express";
+import auth from "../middleWare/auth.js";
+import { createOrder, getAllOrders, getOrder, getOrderLocation, getUserOrders, updateOrderStatus } from "../controller/orderController.js";
+import admin from "../middleWare/admin.js";
+
+const orderRouter=express.Router();
+
+orderRouter.post('/',auth,createOrder);
+orderRouter.get('/',auth,getUserOrders);
+orderRouter.get('/all',auth,admin,getAllOrders);
+orderRouter.get('/:id',auth,getOrder);
+orderRouter.put('/:id/status',auth,admin,updateOrderStatus);
+orderRouter.put('/:id/location',auth,admin,getOrderLocation);
+
+export default orderRouter
+
