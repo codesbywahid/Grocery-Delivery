@@ -4,6 +4,7 @@ import cors from "cors";
 import authRouter from "./Routes/authRoutes.js";
 import productRouter from "./Routes/productRoutes.js";
 import uploadRouter from "./Routes/uploadRoutes.js";
+import orderRouter from "./Routes/orderRoutes.js";
 
 const app = express();
 
@@ -19,7 +20,7 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/api/auth',authRouter)
 app.use('/api/products',productRouter)
 app.use('/api/upload',uploadRouter)
-
+app.use('/api/orders',orderRouter)
 
 
 // Error handling
