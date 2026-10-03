@@ -8,3 +8,15 @@ const transporter = createTransport({
         pass: process.env.SMTP_PASS,
     }
 })
+
+const sendEmail=async ({to,subject,body}:{to:string,subject:string,body:string})=>{
+    const response = await transporter.sendMail({
+        from:"";
+        to,
+        subject,
+        html:body,
+    })
+    return response
+
+}
+export default sendEmail
