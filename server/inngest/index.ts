@@ -17,7 +17,17 @@ const checkLowStock = inngest.createFunction(
             return await prisma.product.findUnique({
                 where:{id:productId}
             })
-        } )
+        })
+        
+    if(!product || product.stock==null || product.stock >= LOW_STOCK_THRESHOLD){
+        return{skipped:true,stock:product?.stock}
+    }
+    await step.run("send-low-stock-email",async()=>{
+        const adminEmails = process.env.ADMIN_EMAILS ? process.env.ADMIN_EMAILS.split(",").map((e)=>e.trim()):[];
+        if(adminEmails?.length ===0) return {skipped:true,reason:"No admin emails"}
+
+        
+    })
     }
 )
 
