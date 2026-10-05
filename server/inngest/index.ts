@@ -261,9 +261,31 @@ const sendMonthlyOffers = inngest.createFunction(
     }
 });
 
-
+        sentCount += batch.length;
             }
+            return {sent:sentCount}
         }
 )
+
+//Auto Assign Rider after 5 min
+const autoAssignRider= inngest.createFunction({}
+    id:'auto-assig-rider',
+    name:'Auto Assign Delivery Rider',
+    triggers:[{event:"order/placed"}]
+), async ({event,step}) => {
+    const {orderId}= event.data;
+
+    //Wait 5 min before attempting assignment
+    await step.sleep('wait-5-min',"5m");
+
+    const result = await step.run('assign-rider',async()=>{
+        const order= await prisma.order.findUnique({where:{id:orderId}})
+
+        //Skip if order doesn't exist, already assigned, or cancelled
+        if(!order) return{skipped : true, reason :"Order not found"};
+        if(order.deliveryPartnerId) return {skipped:true,reason:"Order not found"}
+    })
+    
+}
 
 export const functions = [checkLowStock, sendMonthlyOffers]
