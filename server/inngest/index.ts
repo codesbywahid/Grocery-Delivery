@@ -326,10 +326,16 @@ const autoAssignRider = inngest.createFunction(
                 status:"Assigned",
                 statusHistory:history,
             }
-
         })
 
+        return{
+            assigned:true,
+            riderId:availableRider.id,
+            riderName:availableRider.name,
+            orderId:orderId,
+        }
     })
-}
+    return result
+})
 
-export const functions = [checkLowStock, sendMonthlyOffers]
+export const functions = [checkLowStock, sendMonthlyOffers,autoAssignRider];
