@@ -3,6 +3,7 @@ import { Inngest, step } from "inngest";
 import { prisma } from "../config/prisma.js";
 
 import sendEmail from "../config/nodeMailer.js";
+import { timeStamp } from "node:console";
 
 const LOW_STOCK_THRESHOLD = 10;
 
@@ -310,6 +311,23 @@ const autoAssignRider = inngest.createFunction(
 
         //Generate 6-digit OTP
         const otp=Math.floor(100000 + Math.random()*900000).toString();
+
+        const history = (Array.isArray(order.statusHistory)? order.statusHistory : []) as any[];
+        history.push({
+            status:"Assigned",
+            note:"Auto-assigned to ${availableRider.name}",
+            timeStamp : new Date(),
+        })
+        await prisma.order.update({
+            where:{id:orderId},
+            data:{
+                deliveryPartnerId : availableRider.id,
+                deliveryOtp : otp,
+                status:"Assigned",
+                statusHistory:history,
+            }
+
+        })
 
     })
 }
