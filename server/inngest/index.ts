@@ -268,12 +268,14 @@ const sendMonthlyOffers = inngest.createFunction(
 )
 
 //Auto Assign Rider after 5 min
-const autoAssignRider= inngest.createFunction({}
-    id:'auto-assig-rider',
-    name:'Auto Assign Delivery Rider',
-    triggers:[{event:"order/placed"}]
-), async ({event,step}) => {
-    const {orderId}= event.data;
+const autoAssignRider = inngest.createFunction(
+    {
+        id: "auto-assig-rider",
+        name: "Auto Assign Delivery Rider",
+        triggers: [{ event: "order/placed" }]
+    },
+    async ({ event, step }) => {
+        const { orderId } = event.data;
 
     //Wait 5 min before attempting assignment
     await step.sleep('wait-5-min',"5m");
@@ -283,9 +285,33 @@ const autoAssignRider= inngest.createFunction({}
 
         //Skip if order doesn't exist, already assigned, or cancelled
         if(!order) return{skipped : true, reason :"Order not found"};
-        if(order.deliveryPartnerId) return {skipped:true,reason:"Order not found"}
+        if(order.deliveryPartnerId) return {skipped:true,reason:"Already Assigned"}
+
+        if(["Cancelled", "Delivered"].includes(order.status as string)) return {skipped:true,reason:"Order is ${order.status"};
+
+        //Find a rider not currently delivering
+        const busyOrders= await prisma.order.findMany({
+            where:{
+                status:{in:["Assigned","Packed","Out for Delivery"]},
+                deliveryPartnerId:{not: null}
+            },
+            select:{deliveryPartnerId:true}
+        })
+
+        const busyRidersIds= busyOrders.map((o)=>o.deliveryPartnerId)
+
+        const availableRider = await prisma.deliveryPartner.findFirst({
+            where:{
+                isActive:true,
+                id:{notIn:busyRidersIds as string[]}
+            }
+        })
+        if(!availableRider) return{skipped:true,reason:"No riders available"}
+
+        //Generate 6-digit OTP
+        const otp=Math.floor(100000 + Math.random()*900000).toString();
+
     })
-    
 }
 
 export const functions = [checkLowStock, sendMonthlyOffers]
