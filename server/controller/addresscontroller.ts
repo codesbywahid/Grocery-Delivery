@@ -23,4 +23,27 @@ export const addAddress = async(req: Request, res: Response) =>{
         where:{userId:req.user!.id}
     })
 
+    let makeDefault = isDefault;
+    if(currentAddresses.length===0) makeDefault=true;
+
+    if(makeDefault){
+        await prisma.address.updateMany({
+            where:{userId:req.user!.id},
+            data:{isDefault:false}
+        })
+    }
+    await prisma.address.create({
+    data:{
+        userId:req.user!.id,
+        label,
+        address,
+        city,
+        state,
+        zip,
+        isDefault:makeDefault,
+        lat:Number(lat),
+        lng:Number(lng)
+        
+    }
+})
 }
