@@ -97,3 +97,20 @@ export const pdateAddress = async (req: Request, res: Response) => {
     })
     res.json({addresses})
 }
+
+//Delete Address
+//DELETE /api/addresses/:id
+export const deleteAddress = async(req: Request, res: Response) =>{
+     try{
+        await prisma.address.delete({where : {id:req.params.id as string}})
+     }catch(err : any){
+        console.log (err.message)
+}
+
+const addresses = await prisma.address.findMany({
+        where :{userId:req.user!.id},
+        orderBy:{createdAt:"asc"}
+    })
+    res.json({addresses})
+
+}
