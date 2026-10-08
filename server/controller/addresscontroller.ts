@@ -52,5 +52,24 @@ const addresses = await prisma.address.findMany({
     orderBy:{createdAt:"asc"}
 })
 res.status(201).json({addresses})
+}
 
+//Update Address
+//PUT api.addresses/:id
+export const pdateAddress = async (req: Request, res: Response) => {
+     const {label, address, city, state, zip, isDefault, lat, lng} = req.body;
+
+     //Require coordinates
+     if(lat == null || lng == null){
+        return res.status(400).json({
+            message:"Location coordinates are required.Please allow location access."
+        })
+     }
+
+     if(isDefault){
+        await prisma.address.updateMany({
+            where:{userId:req.user!.id},
+            data:{isDefault:false}
+        })
+     }
 }
