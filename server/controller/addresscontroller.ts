@@ -84,10 +84,16 @@ export const pdateAddress = async (req: Request, res: Response) => {
 
     try{
         await prisma.address.update({
-            where:{id : req.params.id},
+            where:{id : req.params.id as string},
             data,
         })
     }catch(err){
         return res.status(404).json({message:"Address not found"})
     }
+
+    const addresses = await prisma.address.findMany({
+        where :{userId:req.user!.id},
+        orderBy:{createdAt:"asc"}
+    })
+    res.json({addresses})
 }
