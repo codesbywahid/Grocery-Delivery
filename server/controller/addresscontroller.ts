@@ -72,4 +72,14 @@ export const pdateAddress = async (req: Request, res: Response) => {
             data:{isDefault:false}
         })
      }
+
+     const data: any ={};
+     if(label) data.label=label;
+     if(address) data.address=address;
+     if(city) data.city=city;
+     if(state) data.state=state;
+     if(isDefault !== undefined) data.isDefault=isDefault;
+    if(lat!= null) data.lat=Number(lat);
+    if(lng!=null) data.lng=Number(lng);
+    
 }
