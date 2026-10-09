@@ -21,3 +21,11 @@ export const getAdminStats = async (req: Request, res:Response)=>{
 ])
 res.json({totalOrders,totalUsers,totalProducts,totalPartners,recentOrders})
 }
+
+// get delivery partner list for admin
+export const getDeliveryPartners = async (req: Request, res:Response)=>{
+    const partners = await prisma.deliveryPartner.findMany(
+        {orderBy : {createdAt:"desc"}}
+    )
+    res.json({partners})
+}
