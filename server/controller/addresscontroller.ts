@@ -56,7 +56,7 @@ res.status(201).json({addresses})
 
 //Update Address
 //PUT api.addresses/:id
-export const pdateAddress = async (req: Request, res: Response) => {
+export const updateAddress = async (req: Request, res: Response) => {
      const {label, address, city, state, zip, isDefault, lat, lng} = req.body;
 
      //Require coordinates
