@@ -7,6 +7,7 @@ import uploadRouter from "./Routes/uploadRoutes.js";
 import orderRouter from "./Routes/orderRoutes.js";
 import {serve} from "inngest/express";
 import { inngest,functions } from "./inngest/index.js";
+import addressRouter from "./Routes/addressRoutes.js";
 
 
 const app = express();
@@ -25,6 +26,7 @@ app.use('/api/products',productRouter)
 app.use('/api/upload',uploadRouter)
 app.use('/api/orders',orderRouter)
 app.use("/api/inngest",serve({client:inngest,functions}))
+app.use('/api/addresses',addressRouter)
 
 
 // Error handling
