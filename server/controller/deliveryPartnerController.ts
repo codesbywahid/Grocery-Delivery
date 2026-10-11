@@ -47,5 +47,15 @@ export const getMyDeliveries= async(req: Request,res:Response)=>{
 
     if(status === "active"){
         where.status = {in : ["Assigened","Packed", "Out for Delivery"]}
-    }
+    }else if(status === "completed"){
+         where.status = {in : ["Deliveres","Cancelled"]}
+        }
+
+        const orders = await prisma.order.findMany({
+            where,
+            include:{user:{select:{name:true,email:true,phone:true}}},
+            orderBy:{createdAt:"desc"}
+        })
+
+        res.json({orders})
 }
