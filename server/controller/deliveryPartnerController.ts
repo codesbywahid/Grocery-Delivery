@@ -32,4 +32,20 @@ export const loginPartner= async(req: Request,res:Response)=>{
     if(!isMatch){
         return res.status(401).json({message:"Invalid email or password"})
     }
+
+    const token = generateToken(partner.id)
+    const {password: _,...partnerData} = partner;
+    res.json({partner:partnerData,token})
+}
+
+//Get assigned deliveries
+//GET /api/delivery/my-deliveries
+export const getMyDeliveries= async(req: Request,res:Response)=>{
+    const {status} = req.query;
+
+    const where : any= {deliveryPartnerId:req.partner!.id};
+
+    if(status === "active"){
+        where.status = {in : ["Assigened","Packed", "Out for Delivery"]}
+    }
 }
