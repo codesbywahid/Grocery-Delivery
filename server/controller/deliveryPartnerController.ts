@@ -97,3 +97,25 @@ export const completeDelivery= async(req: Request,res:Response)=>{
     })
     res.json({order:updatedOrder,message:"Delivery completed successfully"})
 }
+
+//Cancel Delivery
+//PUT /api/delivery/my-deliveries/:id/cancel
+export const cancelDelivery= async(req: Request,res:Response)=>{
+    const {reason} = req.body;
+     const order = await prisma.order.findFirst({
+        where:{id: req.params.id as string, deliveryPartnerId : req.partner!.id},
+    })
+
+    if (order!.status==="Delivered") {
+        return res.status(400).json({message:"Cannot cancel a delivered order"})
+    }
+    
+    const history = order!.statusHistory as any [];
+    history.push({status:"Canceled",note:reason || "",timeStamp:new Date()})
+
+     const updatedOrder= await prisma.order.update({
+        where:{id:order!.id},
+        data :{status:"Canceled", statusHistory:history}
+    })
+    res.json({order:updatedOrder,message :"Delivery Cancelled"})
+}
