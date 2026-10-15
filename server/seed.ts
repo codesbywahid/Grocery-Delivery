@@ -359,7 +359,19 @@ const seedDB = async ()=>{
         reviewCount: 12
     },
 ];
+
+    await prisma.product.createMany({data:products})
+    console.log('Created ${products.length} products')
+
+    console.log("Seed completed successfully")
+    process.exit(0);
+
     } catch (error) {
-        
+        console.error("Seed error:",error)
+        process.exit(1)
+    }finally{
+        await prisma.$disconnect()
     }
 }
+
+seedDB();
