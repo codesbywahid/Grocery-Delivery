@@ -49,8 +49,39 @@ export function AuthProvider({children}:{children:ReactNode}){
         }
     }
 
+    const register = async (name:string, email:string,password:string)=>{
+        try {
+            const { data } = await api.post('/auth/register',{name,email,password})
+            setUser(data.user)
+            setToken(data.token)
+            localStorage.setItem("auth_token",data.token)
+            localStorage.setItem("auth_user",JSON.stringify(data.user))
+            toast.success("Registration successful")
+            navigate('/')
+        } catch (error : any) {
+            toast.error(error?.response?.data?.message || error?.message)
+            
+        }
+    }
 
-    return <AuthContext.Provider value={}>
+    const logout=()=>{
+        setUser(null)
+            setToken(null)
+            localStorage.removeItem("auth_token")
+            localStorage.removeItem("auth_user")
+    }
+    const updateUser = (userData:Partial<User>)=>{
+        if(user){
+            const updated={...user,...userData};
+            setUser(updated)
+            localStorage.setItem('auth_user',JSON.stringify(updated))
+        }
+    }
+
+
+    return <AuthContext.Provider value={{
+        user,token,loading,login,register,logout,updateUser
+    }}>
         {children}
     </AuthContext.Provider>
 }
