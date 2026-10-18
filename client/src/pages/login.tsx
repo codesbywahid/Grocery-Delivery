@@ -29,7 +29,7 @@ const Login = () => {
       setLoading(false)
     }
   }
-
+  
   return (
     <div className="min-h-screen flex">
       {/* Left Side*/}
