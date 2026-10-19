@@ -21,7 +21,7 @@ const AddressCard = ({
 
   return (
     <div
-      key={addr._id}
+      key={addr.id}
       className="max-w-3xl bg-white rounded-2xl p-6 flex items-start justify-between"
     >
       {/* left */}
@@ -32,9 +32,7 @@ const AddressCard = ({
 
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <p className="text-sm font-semibold text-app-green">
-              {addr.label}
-            </p>
+            <p className="text-sm font-semibold text-app-green">{addr.label}</p>
 
             {addr.isDefault && (
               <span className="flex-center gap-1 px-2.5 py-0.5 text-[10px] font-medium bg-app-green text-white rounded-full">
@@ -62,7 +60,7 @@ const AddressCard = ({
         </button>
 
         <button
-          onClick={() => handleDelete(addr._id)}
+          onClick={() => handleDelete(addr.id)}
           className="p-2 text-app-text-light hover:text-app-error hover:bg-red-50 rounded-lg transition-colors"
         >
           <Trash2Icon className="size-4" />

@@ -57,7 +57,7 @@ const Address = () => {
       isDefault: add.isDefault,
     });
 
-    setEditingId(add._id);
+    setEditingId(add.id);
     setShowForm(true);
   };
 
@@ -88,7 +88,15 @@ const Address = () => {
         </div>
 
         {/* Form Model */}
-        {showForm && <AddressForm resetForm={resetForm} handleSubmit={handleSubmit} form={form} setForm={setForm} editingId={editingId} />}
+        {showForm && (
+          <AddressForm
+            resetForm={resetForm}
+            handleSubmit={handleSubmit}
+            form={form}
+            setForm={setForm}
+            editingId={editingId}
+          />
+        )}
 
         {/* Address List */}
         {loading ? (
@@ -109,7 +117,7 @@ const Address = () => {
           <div className="space-y-4">
             {addresses.map((addr) => (
               <AddressCard
-                key={addr._id}
+                key={addr.id}
                 addr={addr}
                 onEditHandler={onEditHandler}
                 setAddresses={setAddresses}

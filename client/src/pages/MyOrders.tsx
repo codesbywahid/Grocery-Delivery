@@ -54,9 +54,7 @@ const MyOrders = () => {
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`px-4 py-2 text-sm font-medium rounded-xl whitespace-nowrap transition-colors ${
-                activeTab === tab
-                  ? "bg-app-green hover:bg-app-cream"
-                  : ""
+                activeTab === tab ? "bg-app-green hover:bg-app-cream" : ""
               }`}
             >
               {tab === "all" ? "All Orders" : tab}
@@ -90,8 +88,8 @@ const MyOrders = () => {
           <div className="space-y-4">
             {orders.map((order) => (
               <Link
-                key={order._id}
-                to={`/orders/${order._id}`}
+                key={order.id}
+                to={`/orders/${order.id}`}
                 className="block max-w-4xl bg-white rounded-2xl p-5 hover:shadow transition-all"
               >
                 {/* Order id, date & status */}
@@ -99,21 +97,18 @@ const MyOrders = () => {
                   {/* left */}
                   <div>
                     <p className="text-sm font-medium text-app-green">
-                      Order #{order._id.slice(-8).toUpperCase()}
+                      Order #{order.id.slice(-8).toUpperCase()}
                     </p>
 
                     <div className="flex items-center gap-2 mt-1">
                       <CalendarIcon className="size-3 text-app-text-light" />
 
                       <span className="text-xs text-app-text-light">
-                        {new Date(order.createdAt).toLocaleDateString(
-                          "en-US",
-                          {
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                          }
-                        )}
+                        {new Date(order.createdAt).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        })}
                       </span>
                     </div>
                   </div>
