@@ -1,4 +1,4 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { data, Link, useNavigate, useParams } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useEffect, useState } from "react";
 import type { Product } from "../types";
@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import DummyReviewsSection from "../assets/DummyReviewsSection";
 import ProductCard from "../components/ProductCard";
+import api from "../config/api";
 const Productpage = () => {
   const currency = import.meta.env.VITE_CURRENCY_SYMBOL || "$";
   const { id } = useParams();
@@ -29,10 +30,12 @@ const Productpage = () => {
     setLoading(true);
     setLocalQuantity(1);
     window.scrollTo(0, 0);
-    const product = dummyProducts.find((p) => p.id === id);
-    setProduct(product!);
-    setRelatedProducts(dummyProducts.filter((p) => p.id !== id));
-    setLoading(false);
+    api.get('/products/${id}').then(({data})=>{setProduct(data.product);
+      return api.get('/products?category=${data.product.category}')
+    }).then(({data})=>{
+      setRelatedProducts(data.products.filter((p:Product)=>p.id!==id))
+    }).catch(()=>navigate("/products")).finally(()=>setLoading(false))
+
   }, [id, navigate]);
   if (loading) return <Loading />;
   if (!product) return null;
