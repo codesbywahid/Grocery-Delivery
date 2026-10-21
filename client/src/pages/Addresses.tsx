@@ -111,15 +111,17 @@ const Address = () => {
     setShowForm(true);
   };
 
-  useEffect(() => {
+  
+useEffect(() => {
     api.get('/addresses').then(({data})=>{
       setAddresses(data.addresses)
     }).catch((error:any)=>{
-      toast.error(error.response?.data?.message || error?.message).finally(()=>{
+      toast.error(error.response?.data?.message || error?.message)
+    }).finally(()=>{
         setLoading(false)
-      })
     })
   }, []);
+
 
   return (
     <div className="min-h-screen bg-app-cream">
