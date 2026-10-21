@@ -1,13 +1,7 @@
 import { MapPinIcon, PlusIcon } from "lucide-react";
-
-import { dummyAddressData } from "../assets/assets";
-
 import type { Address as AddressType } from "../types";
-
 import React, { useEffect, useState } from "react";
-
 import Loading from "../components/Loading";
-
 import AddressCard from "../components/AddressCard";
 import AddressForm from "../components/AddressForm";
 import { useAuth } from "../context/AuthContext";
@@ -16,8 +10,6 @@ import toast from "react-hot-toast";
 
 const Address = () => {
   const {updateUser}=useAuth()
-
-
   const [addresses, setAddresses] = useState<AddressType[]>([]);
 
   const [loading, setLoading] = useState(true);
@@ -120,8 +112,13 @@ const Address = () => {
   };
 
   useEffect(() => {
-    setAddresses(dummyAddressData);
-    setTimeout(() => setLoading(false), 1000);
+    api.get('/addresses').then(({data})=>{
+      setAddresses(data.addresses)
+    }).catch((error:any)=>{
+      toast.error(error.response?.data?.message || error?.message).finally(()=>{
+        setLoading(false)
+      })
+    })
   }, []);
 
   return (
