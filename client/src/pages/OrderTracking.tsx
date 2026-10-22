@@ -7,6 +7,7 @@ import { ArrowLeftIcon, MapPinIcon, PhoneIcon } from "lucide-react";
 import OrderOTP from "../components/OrderTracking/OrderOTP";
 import LiveMap from "../components/OrderTracking/LiveMap";
 import OrderTimeLine from "../components/OrderTracking/OrderTimeLine";
+import api from "../config/api";
 const OrderTracking = () => {
   const currency = import.meta.env.VITE_CURRENCY_SYMBOL || "$";
   const { id } = useParams();
@@ -18,9 +19,30 @@ const OrderTracking = () => {
     lng: number;
   } | null>(null);
   useEffect(() => {
-    setOrder(dummyDashboardOrdersData.find((o) => o.id === id) as any);
-    setLoading(false);
+    api.get('/orders/${id}').then((res)=>setOrder(res.data.order)).catch(()=>navigate("/orders")).finally(()=>setLoading(false))
   }, [id, navigate]);
+
+  //Live Location every 10 seconds
+  useEffect(()=>{
+    if(!order || ["Delivered","Cancelled","Placed"].includes(order.status))
+      return;
+
+    const fetchLocation=async ()=>{
+      try {
+        const {data}=await api.get('/orders/${id}/location')
+        if(data.liveLocation?.lat && data.liveLocation?.lng && data.liveLocation.updatedAt){
+          setLiveLocation({
+            lat:data.liveLocation.lat,
+            lng:data.liveLocation.lng 
+          })
+        } 
+      } catch (error) {
+        
+      }
+    }
+  })
+
+
   if (loading) return <Loading />;
   if (!order) return null;
   return (
