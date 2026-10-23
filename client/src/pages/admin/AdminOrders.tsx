@@ -58,7 +58,7 @@ export default function AdminOrders() {
       setSelectedPartner("")
       fetchOrders()
     } catch (error:any) {
-      
+      toast.error(error?.response?.data?.message || "Failed")
     }
   };
 
