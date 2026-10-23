@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import type { Order } from "../types";
-import { dummyDashboardOrdersData } from "../assets/assets";
 import Loading from "../components/Loading";
 import { ArrowLeftIcon, MapPinIcon, PhoneIcon } from "lucide-react";
 import OrderOTP from "../components/OrderTracking/OrderOTP";
@@ -36,11 +35,19 @@ const OrderTracking = () => {
             lng:data.liveLocation.lng 
           })
         } 
-      } catch (error) {
+
+        //Also update order status if changed
+        if (data.status && data.status !== order.status) {
+          setOrder((prev)=>prev?{...prev,status: data.status}:prev)
+        }
+      } catch {
         
       }
     }
-  })
+    fetchLocation()
+    const interval=setInterval(fetchLocation,10000)
+    return()=> clearInterval(interval)
+  },[id,order?.status])
 
 
   if (loading) return <Loading />;
