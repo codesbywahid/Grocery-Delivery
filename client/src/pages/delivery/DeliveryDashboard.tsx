@@ -1,11 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PackageIcon, NavigationIcon } from "lucide-react";
 import OtpModal from "../../components/Delivery/OtpModal";
 import CancelModal from "../../components/Delivery/CancelModal";
 import DeliveryOrderCard from "../../components/Delivery/DeliveryOrderCard";
 import Loading from "../../components/Loading";
 import type { Order } from "../../types";
-import { dummyDashboardOrdersData } from "../../assets/assets";
+import axios from "axios";
+import toast from "react-hot-toast";
+
+const API_URL=import.meta.env.VITE_BASE_URL || "http://localhost:5000/api"
+
+const getAuthHeaders=()=>({
+  headers:{Authorization:'Bearer $(localStorage.getItem("delivery_token))'}
+})
 
 export default function DeliveryDashboard() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -22,15 +29,48 @@ export default function DeliveryDashboard() {
   const [cancelModal, setCancelModal] = useState<string | null>(null);
   const [cancelReason, setCancelReason] = useState("");
 
+  const watchIdRef = useRef<number |null>(null)
+
   const fetchOrders = async () => {
     setLoading(true);
-    setOrders(dummyDashboardOrdersData as any);
-    setLoading(false);
+    try {
+      const {data}=await axios.get('${API_URL}/delivery/my-deliveries?status=${tab}',getAuthHeaders())
+      setOrders(data.orders)
+    } catch (error:any) {
+      toast.error(error?.response?.data?.message || "Failed to load deliveries")
+    }finally{
+      setLoading(false)
+    }
   };
-
   useEffect(() => {
     fetchOrders();
   }, [tab]);
+
+  //send location every 10 sec for active delivery
+  useEffect(()=>{
+    const activeOrders=orders.filter((o)=>["Assigned","Packed","Out for Delivery"].includes(o.status))
+
+    if (activeOrders.length===0 || tracking) {
+      if (watchIdRef.current!=null) {
+        navigator.geolocation.clearWatch(watchIdRef.current)
+        watchIdRef.current=null
+      }
+      return
+    }
+
+    const sendLocation=(pos: GeolocationPosition)=>{
+      const {latitude:lat,longitude:lng} = pos.coords;
+      activeOrders.forEach((order)=>{
+        axios.put('${API_URL}/delivery/my_deliveries/${order.id}/location',{lat,lng},getAuthHeaders()).catch(()=>{})
+      })
+    }
+    watchIdRef.current= navigator.geolocation.watchPosition(sendLocation,()=>{},{
+      enableHighAccuracy:true,
+      maximumAge:10000
+    })
+  },[orders,tracking])
+
+  
 
   const handleUpdateStatus = async (orderId: string, status: string) => {
     console.log(orderId, status);

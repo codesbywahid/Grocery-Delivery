@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BikeIcon } from "lucide-react";
 import { heroSectionData } from "../../assets/assets";
 import api from "../../config/api";
@@ -27,6 +27,11 @@ export default function DeliveryLogin() {
         }
 
     };
+    useEffect(()=>{
+        if (localStorage.getItem("delivery_token")) {
+            navigate('/delivery')
+        }
+    },[])
 
     return (
         <div className="min-h-screen flex">
