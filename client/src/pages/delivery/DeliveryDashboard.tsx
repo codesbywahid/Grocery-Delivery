@@ -8,11 +8,11 @@ import type { Order } from "../../types";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-const API_URL=import.meta.env.VITE_BASE_URL || "http://localhost:5000/api"
+const API_URL = import.meta.env.VITE_BASE_URL || "http://localhost:5000/api";
 
-const getAuthHeaders=()=>({
-  headers:{Authorization:'Bearer $(localStorage.getItem("delivery_token))'}
-})
+const getAuthHeaders = () => ({
+  headers: { Authorization: `Bearer ${localStorage.getItem("delivery_token")}` },
+});
 
 export default function DeliveryDashboard() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -29,51 +29,101 @@ export default function DeliveryDashboard() {
   const [cancelModal, setCancelModal] = useState<string | null>(null);
   const [cancelReason, setCancelReason] = useState("");
 
-  const watchIdRef = useRef<number |null>(null)
+  const watchIdRef = useRef<number | null>(null);
+  const ordersRef = useRef<Order[]>([]);
+
+  // keep latest orders for the location callback
+  useEffect(() => {
+    ordersRef.current = orders;
+  }, [orders]);
 
   const fetchOrders = async () => {
     setLoading(true);
     try {
-      const {data}=await axios.get('${API_URL}/delivery/my-deliveries?status=${tab}',getAuthHeaders())
-      setOrders(data.orders)
-    } catch (error:any) {
-      toast.error(error?.response?.data?.message || "Failed to load deliveries")
-    }finally{
-      setLoading(false)
+      const { data } = await axios.get(
+        `${API_URL}/delivery/my-deliveries?status=${tab}`,
+        getAuthHeaders()
+      );
+      setOrders(data.orders);
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Failed to load deliveries");
+    } finally {
+      setLoading(false);
     }
   };
+
   useEffect(() => {
     fetchOrders();
   }, [tab]);
 
-  //send location every 10 sec for active delivery
-  useEffect(()=>{
-    const activeOrders=orders.filter((o)=>["Assigned","Packed","Out for Delivery"].includes(o.status))
+  // Send location every 10s while tracking is ON and there are active orders
+  useEffect(() => {
+    const activeOrders = ordersRef.current.filter((o) =>
+      ["Assigned", "Packed", "Out for Delivery"].includes(o.status)
+    );
 
-    if (activeOrders.length===0 || tracking) {
-      if (watchIdRef.current!=null) {
-        navigator.geolocation.clearWatch(watchIdRef.current)
-        watchIdRef.current=null
+    // Nothing to track OR user turned tracking off → stop
+    if (!tracking || activeOrders.length === 0) {
+      if (watchIdRef.current !== null) {
+        navigator.geolocation.clearWatch(watchIdRef.current);
+        watchIdRef.current = null;
       }
-      return
+      return;
     }
 
-    const sendLocation=(pos: GeolocationPosition)=>{
-      const {latitude:lat,longitude:lng} = pos.coords;
-      activeOrders.forEach((order)=>{
-        axios.put('${API_URL}/delivery/my_deliveries/${order.id}/location',{lat,lng},getAuthHeaders()).catch(()=>{})
-      })
-    }
-    watchIdRef.current= navigator.geolocation.watchPosition(sendLocation,()=>{},{
-      enableHighAccuracy:true,
-      maximumAge:10000
-    })
-  },[orders,tracking])
+    const sendLocation = (pos: GeolocationPosition) => {
+      const { latitude: lat, longitude: lng } = pos.coords;
+      // read fresh orders from ref so newly added active orders get updates too
+      ordersRef.current
+        .filter((o) => ["Assigned", "Packed", "Out for Delivery"].includes(o.status))
+        .forEach((order) => {
+          axios
+            .put(
+              `${API_URL}/delivery/my-deliveries/${order.id}/location`,
+              { lat, lng },
+              getAuthHeaders()
+            )
+            .catch(() => {});
+        });
+    };
 
-  
+    // one-shot push immediately
+    navigator.geolocation.getCurrentPosition(sendLocation, () => {}, {
+      enableHighAccuracy: true,
+    });
+
+    // continuous watch
+    watchIdRef.current = navigator.geolocation.watchPosition(
+      sendLocation,
+      () => {},
+      { enableHighAccuracy: true, maximumAge: 10000 }
+    );
+
+    // also poll every 10s
+    const interval = setInterval(() => {
+      navigator.geolocation.getCurrentPosition(sendLocation, () => {}, {
+        enableHighAccuracy: true,
+      });
+    }, 10000);
+
+    return () => {
+      clearInterval(interval);
+      if (watchIdRef.current !== null) {
+        navigator.geolocation.clearWatch(watchIdRef.current);
+        watchIdRef.current = null;
+      }
+      clearInterval(interval)
+    };
+  }, [tracking, orders]);
 
   const handleUpdateStatus = async (orderId: string, status: string) => {
-    console.log(orderId, status);
+    try {
+      await axios.put('${API_URL}/delivery/my-deliveries/${orderId}/status',{status},getAuthHeaders())
+      toast.success('Status updated to ${status}')
+      fetchOrders();
+    } catch (error:any) {
+      
+    }
   };
 
   const handleComplete = async () => {
@@ -104,7 +154,11 @@ export default function DeliveryDashboard() {
           <button
             key={t}
             onClick={() => setTab(t)}
-            className={`px-4 py-2 text-sm font-medium rounded-xl transition-colors ${tab === t ? "bg-app-green text-white" : "bg-white text-zinc-600 hover:bg-app-cream border border-app-border"}`}
+            className={`px-4 py-2 text-sm font-medium rounded-xl transition-colors ${
+              tab === t
+                ? "bg-app-green text-white"
+                : "bg-white text-zinc-600 hover:bg-app-cream border border-app-border"
+            }`}
           >
             {t === "active" ? "Active" : "Completed"}
           </button>
@@ -112,7 +166,11 @@ export default function DeliveryDashboard() {
         <div className="ml-auto">
           <button
             onClick={() => setTracking((prev) => !prev)}
-            className={`px-4 py-2 text-sm font-medium rounded-xl transition-colors flex items-center gap-1.5 ${tracking ? "bg-green-600 text-white" : "bg-white text-zinc-600 border border-app-border hover:bg-app-cream"}`}
+            className={`px-4 py-2 text-sm font-medium rounded-xl transition-colors flex items-center gap-1.5 ${
+              tracking
+                ? "bg-green-600 text-white"
+                : "bg-white text-zinc-600 border border-app-border hover:bg-app-cream"
+            }`}
           >
             <NavigationIcon
               className={`w-3.5 h-3.5 ${tracking ? "animate-pulse" : ""}`}
@@ -162,6 +220,7 @@ export default function DeliveryDashboard() {
           submitting={submitting}
         />
       )}
+
       {/* Cancel Modal */}
       {cancelModal && (
         <CancelModal
