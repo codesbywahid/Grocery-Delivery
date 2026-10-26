@@ -122,28 +122,40 @@ export default function DeliveryDashboard() {
       toast.success('Status updated to ${status}')
       fetchOrders();
     } catch (error:any) {
-      
+      toast.error(error?.response?.data?.message || "Failed")
     }
   };
 
   const handleComplete = async () => {
     if (!otpModal || !otp) return;
     setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
-      setOtpModal(null);
-      setOtp("");
-    }, 1000);
+    try {
+      await axios.put('${API_URL}/delivery/my-deliveries/${otpModal}/complete',{otp},getAuthHeaders())
+      toast.success("Delivery completed!")
+      setOtpModal(null)
+      setOtp("")
+      fetchOrders()
+    } catch (error:any) {
+      toast.error(error?.response?.data?.message || error?.message)
+    }finally{
+      setSubmitting(false)
+    }
   };
 
   const handleCancel = async () => {
     if (!cancelModal) return;
     setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
-      setCancelModal(null);
-      setCancelReason("");
-    }, 1000);
+    try {
+      await axios.put('${API_URL}/delivery/my-deliveries/${cancelModal}/cancel',{reason:cancelReason},getAuthHeaders())
+      toast.success("Delivery cancelled")
+      setCancelModal(null)
+      setCancelReason("")
+      fetchOrders()
+    } catch (error:any) {
+      toast.error(error?.response?.data?.message || "Failed")
+    }finally{
+      setSubmitting(false)
+    }
   };
 
   return (
